@@ -61,7 +61,13 @@ class App extends React.Component {
       );
     }
   };
-
+  hidingPlayer = url => {
+    if (url) {
+      return <ReactAudioPlayer src={this.state.blobURL} controls />;
+    } else {
+      return;
+    }
+  };
   render() {
     return (
       <div className="App">
@@ -82,9 +88,9 @@ class App extends React.Component {
             : "not recording"}
         </p>
         <h3>Blob:</h3>
-        <ReactAudioPlayer src={this.state.blobURL} controls />
+        {this.hidingPlayer(this.state.blobURL)}
         <h3>Uploaded:</h3>
-        <ReactAudioPlayer src={this.state.audioURL} controls />
+        {this.hidingPlayer(this.state.audioURL)}
         <div style={{ display: "none" }}>
           <ReactMic
             record={this.state.recording} // defaults -> false.  Set to true to begin recording
