@@ -15,7 +15,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       recording: false,
-      filename: "default"
+      filename: "default",
+      audioURL: ""
     };
   }
 
@@ -30,6 +31,7 @@ class App extends React.Component {
     console.log("recordedBlob is: ", recordedBlob);
     var storageRef = firebase.storage().ref();
     var fileRef = storageRef.child("audio/" + this.state.filename + ".mp3");
+    this.setState({ audioURL: URL.createObjectURL(recordedBlob.blob) });
 
     fileRef.put(recordedBlob.blob).then(function(snapshot) {
       console.log("Uploaded a blob or file!");
@@ -39,6 +41,13 @@ class App extends React.Component {
   fileNameChanged = e => {
     this.setState({ filename: e.target.value });
   };
+  audioComponent = url => {
+    if (url === "") {
+      return <p>no audio yet</p>;
+    } else {
+      return <audio src={url} type="audio/mpeg" />;
+    }
+  };
 
   render() {
     return (
@@ -47,9 +56,11 @@ class App extends React.Component {
         <input onChange={this.fileNameChanged} />
         <button onClick={this.onStartClicked}>record</button>
         <button onClick={this.onStopClicked}>stop</button>
+        {this.audioComponent(this.state.audioURL)}
         <div>
           <ReactMic
             record={this.state.recording} // defaults -> false.  Set to true to begin recording
+            onStart={() => {}}
             onStop={this.uploadFile} // callback to execute when audio stops recording
             onData={() => {}} // callback to execute when chunk of audio data is available
             strokeColor="#000000"
