@@ -9,7 +9,6 @@
   "main": "src/index.js",
   "dependencies": {
     "@cleandersonlobo/react-mic": "1.2.0",
-    "babel-preset-stage-1": "6.24.1",
     "firebase": "7.14.0",
     "mic-recorder-to-mp3": "2.2.1",
     "react": "16.12.0",

@@ -17,7 +17,8 @@ class App extends React.Component {
     this.state = {
       recording: false,
       filename: "default",
-      audioURL: ""
+      audioURL: "",
+      blobURL: ""
     };
   }
 
@@ -32,6 +33,7 @@ class App extends React.Component {
     console.log("recordedBlob is: ", recordedBlob);
     var storageRef = firebase.storage().ref();
     var fileRef = storageRef.child("audio/" + this.state.filename + ".mp3");
+    this.setState({ blobURL: recordedBlob.blobURL });
 
     fileRef.put(recordedBlob.blob).then(snapshot => {
       snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -61,8 +63,15 @@ class App extends React.Component {
       <div className="App">
         <h1>Mic upload test</h1>
         <input onChange={this.fileNameChanged} />
-        <button onClick={this.onStartClicked}>record</button>
-        <button onClick={this.onStopClicked}>stop</button>
+        <button disabled={this.state.recording} onClick={this.onStartClicked}>
+          record
+        </button>
+        <button disabled={!this.state.recording} onClick={this.onStopClicked}>
+          stop
+        </button>
+        <h3>Blob:</h3>
+        <ReactAudioPlayer src={this.state.blobURL} controls />
+        <h3>Uploaded:</h3>
         <ReactAudioPlayer src={this.state.audioURL} controls />
         <div style={{ display: "none" }}>
           <ReactMic
