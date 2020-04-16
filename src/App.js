@@ -16,6 +16,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       recording: false,
+      actuallyRecording: false,
       filename: "default",
       audioURL: "",
       blobURL: ""
@@ -26,7 +27,7 @@ class App extends React.Component {
     this.setState({ recording: true });
   };
   onStopClicked = () => {
-    this.setState({ recording: false });
+    this.setState({ recording: false, actuallyRecording: false });
   };
 
   uploadFile = recordedBlob => {
@@ -41,6 +42,9 @@ class App extends React.Component {
       });
       console.log("Uploaded a blob or file!");
     });
+  };
+  onData = recordedBlob => {
+    this.setState({ actuallyRecording: true });
   };
 
   fileNameChanged = e => {
@@ -69,6 +73,14 @@ class App extends React.Component {
         <button disabled={!this.state.recording} onClick={this.onStopClicked}>
           stop
         </button>
+        <p>
+          status:
+          {this.state.recording
+            ? this.state.actuallyRecording
+              ? "recording"
+              : "loading"
+            : "not recording"}
+        </p>
         <h3>Blob:</h3>
         <ReactAudioPlayer src={this.state.blobURL} controls />
         <h3>Uploaded:</h3>
@@ -77,6 +89,7 @@ class App extends React.Component {
           <ReactMic
             record={this.state.recording} // defaults -> false.  Set to true to begin recording
             onStop={this.uploadFile} // callback to execute when audio stops recording
+            onData={this.onData}
             strokeColor="#000000"
             backgroundColor="#FF4081"
             className="sound-wave"
