@@ -55,9 +55,9 @@ class Conversation extends React.Component {
     );
     const newData = {
       conversation: convo
-        .slice(0, index - 1)
-        .concat(convo.slice(index, convo.length)),
-      audio: audio.slice(0, index - 1).concat(audio.slice(index, audio.length))
+        .slice(0, index)
+        .concat(convo.slice(index + 1, convo.length)),
+      audio: audio.slice(0, index).concat(audio.slice(index + 1, audio.length))
     };
     console.log(newData);
     conversationRef.set(newData, { merge: true });
