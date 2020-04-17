@@ -12,22 +12,36 @@ import {
   Tag,
   Button
 } from "@chakra-ui/core";
+
+import CodeGenerator from "./codeGenerator";
+
 import { Redirect, Link } from "react-router-dom";
 
 class Start extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      makingNewConvo: false
+      joiningExistingClass: false,
+      makingNewConvo: false,
+      classCode: ""
     };
   }
+
+  classCodeChanged = e => {
+    this.setState({ classCode: e.target.value });
+  };
+  joinClicked = () => {
+    this.setState({ joiningExistingClass: true });
+  };
   newConversationClicked = () => {
-    this.setState({ makingNewConvo: true });
+    this.setState({ classCode: CodeGenerator(5), makingNewConvo: true });
   };
 
   render = () => {
-    if (this.state.makingNewConvo) {
-      return <Redirect to="/abcd" />;
+    if (this.state.joiningExistingClass) {
+      return <Redirect to={"/" + this.state.classCode} />;
+    } else if (this.state.makingNewConvo) {
+      return <Redirect to={"/" + this.state.classCode} />;
     } else {
       return (
         <ThemeProvider theme={theme}>
@@ -72,8 +86,8 @@ class Start extends React.Component {
                     <Tag size="md" variant="solid" variantColor="facebook">
                       Existing Conversation
                     </Tag>
-                    <Input />
-                    <Button>Join</Button>
+                    <Input onChange={this.classCodeChanged} />
+                    <Button onClick={this.joinClicked}>Join</Button>
                   </Stack>
                 </Stack>
               </Box>
