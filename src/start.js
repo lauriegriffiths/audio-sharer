@@ -39,9 +39,9 @@ class Start extends React.Component {
 
   render = () => {
     if (this.state.joiningExistingClass) {
-      return <Redirect to={"/" + this.state.classCode} />;
+      return <Redirect push={true} to={"/" + this.state.classCode} />;
     } else if (this.state.makingNewConvo) {
-      return <Redirect to={"/" + this.state.classCode} />;
+      return <Redirect push={true} to={"/" + this.state.classCode} />;
     } else {
       return (
         <ThemeProvider theme={theme}>
