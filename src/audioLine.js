@@ -8,7 +8,12 @@ class AudioLine extends React.Component {
       <Stack isInline shouldWrapChildren textAlign="left">
         <Text color="gray.600">{this.props.text}</Text>
         <ReactAudioPlayer src={this.props.url} controls />
-        <IconButton aria-label="icon" icon="delete" textAlign="left" />
+        <IconButton
+          onClick={this.props.onDelete}
+          aria-label="icon"
+          icon="delete"
+          textAlign="left"
+        />
       </Stack>
     );
   }

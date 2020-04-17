@@ -38,14 +38,31 @@ class Conversation extends React.Component {
             conversationText: data.conversation,
             audio: data.audio
           });
-          console.log(doc.data());
         }
       });
   }
 
   audioLines(audio) {
-    return audio.map(url => <AudioLine url={url} />);
+    return audio.map((url, index) => (
+      <AudioLine url={url} onDelete={() => this.deleteAudio(index)} />
+    ));
   }
+  deleteAudio = index => {
+    const convo = this.state.conversationText;
+    const audio = this.state.audio;
+    var conversationRef = DB.collection("conversations").doc(
+      this.props.conversationId
+    );
+    const newData = {
+      conversation: convo
+        .slice(0, index - 1)
+        .concat(convo.slice(index, convo.length)),
+      audio: audio.slice(0, index - 1).concat(audio.slice(index, audio.length))
+    };
+    console.log(newData);
+    conversationRef.set(newData, { merge: true });
+    console.log("delete at position " + index);
+  };
 
   onStartClicked = () => {
     this.setState({ recording: true });
@@ -72,10 +89,11 @@ class Conversation extends React.Component {
         var conversationRef = DB.collection("conversations").doc(
           this.props.conversationId
         );
-        conversationRef.update({
+        const newData = {
           conversation: [...this.state.conversationText, "Laurie:"],
           audio: [...this.state.audio, downloadURL]
-        });
+        };
+        conversationRef.set(newData, { merge: true });
       });
       console.log("Uploaded a blob or file!");
     });
@@ -191,9 +209,8 @@ class Conversation extends React.Component {
                       disabled={!this.state.recording}
                       onClick={this.onStopClicked}
                       aria-label="icon"
-                      icon="chat"
+                      icon="add"
                     />
-                    <IconButton aria-label="icon" icon="add" />
                     <div style={{ display: "none" }}>
                       <ReactMic
                         record={this.state.recording} // defaults -> false.  Set to true to begin recording
