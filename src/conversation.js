@@ -25,7 +25,8 @@ class Conversation extends React.Component {
     this.state = {
       conversationText: [],
       audio: [],
-      recording: false
+      recording: false,
+      name: ""
     };
   }
   componentDidMount() {
@@ -42,11 +43,17 @@ class Conversation extends React.Component {
       });
   }
 
-  audioLines(audio) {
+  audioLines = (audio, conversation) => {
+    console.log("audio lines");
+    console.log(conversation);
     return audio.map((url, index) => (
-      <AudioLine url={url} onDelete={() => this.deleteAudio(index)} />
+      <AudioLine
+        url={url}
+        text={conversation[index]}
+        onDelete={() => this.deleteAudio(index)}
+      />
     ));
-  }
+  };
   deleteAudio = index => {
     const convo = this.state.conversationText;
     const audio = this.state.audio;
@@ -71,6 +78,10 @@ class Conversation extends React.Component {
     this.setState({ recording: false, actuallyRecording: false });
   };
 
+  onNameChanged = e => {
+    this.setState({ name: e.target.value });
+  };
+
   uploadFile = recordedBlob => {
     console.log("recordedBlob is: ", recordedBlob);
     var storageRef = Storage.ref();
@@ -90,7 +101,7 @@ class Conversation extends React.Component {
           this.props.conversationId
         );
         const newData = {
-          conversation: [...this.state.conversationText, "Laurie:"],
+          conversation: [...this.state.conversationText, this.state.name + ":"],
           audio: [...this.state.audio, downloadURL]
         };
         conversationRef.set(newData, { merge: true });
@@ -161,7 +172,7 @@ class Conversation extends React.Component {
                   <Tag size="md" variant="solid" variantColor="facebook">
                     Name
                   </Tag>
-                  <Input />
+                  <Input onChange={this.onNameChanged} />
                 </Stack>
               </Stack>
             </Box>
@@ -196,9 +207,14 @@ class Conversation extends React.Component {
               </Flex>
               <Stack shouldWrapChildren spacing={5} pl={4} pt={4}>
                 <Stack shouldWrapChildren spacing={4}>
-                  {this.audioLines(this.state.audio)}
+                  {this.audioLines(
+                    this.state.audio,
+                    this.state.conversationText
+                  )}
                   <Stack isInline shouldWrapChildren>
-                    <Input />
+                    <Text>
+                      {this.state.recording ? "Recording" : "Push to record->"}
+                    </Text>
                     <IconButton
                       disabled={this.state.recording}
                       onClick={this.onStartClicked}
