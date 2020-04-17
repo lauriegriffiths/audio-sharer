@@ -235,6 +235,7 @@ class Conversation extends React.Component {
                         strokeColor="#000000"
                         backgroundColor="#FF4081"
                         className="sound-wave"
+                        bufferSize={0}
                         mimeType={"audio/mp3"} // defaults -> audio/wav. Set audio/mp3 to switch to MP3     // defaults -> 44100. It accepts values only in range: 22050 to 96000
                       />
                     </div>
